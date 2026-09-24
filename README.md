@@ -17,7 +17,7 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 cd existing_repo
 git remote add origin https://gitlab.binets.fr/tudor.ghica/csc_2f001_ep.git
 git branch -M main
-git push -uf origin main
+git push -uf origin main 
 ```
 
 ## Integrate with your tools
