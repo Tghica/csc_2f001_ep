@@ -12,7 +12,7 @@ all: $(BIN)
 army-pokemon: main.o monster.o 
 	gcc $(LDFLAGS) -o $@ $^ $(LIBS)
 
-main.o mosnter.o: monster.h
+main.o monster.o: monster.h
 
 %.o: %.c 
 	gcc $(CFLAGS) -o $@ -c $<

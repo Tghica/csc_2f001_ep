@@ -3,16 +3,11 @@
 #include "monster.h"
 
 int main() {
-  char name[] = "pikachu-x";
-  struct monster_type **pic = malloc(10 * sizeof *pic);
+  struct army_type *army = create_army();
   for(int i = 0; i < 10; i++) {
-    name[8] = '0' + i;
-    pic[i] = create_monster(name, 10);
+    add_monster(army, create_monster("Pikachu", 100));
   }
-  for(int i = 0; i < 10; i++)
-    display_monster(pic[i]);
-  for(int i = 0; i < 10; i++) 
-    delete_monster(pic[i]);
-  free(pic);
+  display_army(army);
+  delete_army(army);
   return 0;
 }
