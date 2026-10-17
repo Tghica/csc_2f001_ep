@@ -9,10 +9,10 @@ BIN=army-pokemon
 
 all: $(BIN)
 
-army-pokemon: main.o monster.o 
+army-pokemon: main.o monster.o army-pokemon.o
 	gcc $(LDFLAGS) -o $@ $^ $(LIBS)
 
-main.o monster.o: monster.h
+main.o monster.o army-pokemon.o: monster.h army.h
 
 %.o: %.c 
 	gcc $(CFLAGS) -o $@ -c $<
