@@ -1,5 +1,3 @@
-
-
 #include "monster.h"
 
 struct army_type;
