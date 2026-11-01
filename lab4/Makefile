@@ -7,7 +7,7 @@ BIN=bilbao
 
 all: $(BIN)
 
-$(BIN): main.o
+$(BIN): main.o location.o
 	g++ $(CXXFLAGS) -o $@ $^
 
 %.o: %.cpp
