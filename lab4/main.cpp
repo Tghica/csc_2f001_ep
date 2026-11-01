@@ -1,5 +1,6 @@
 #include <iostream>
 #include "location.h"
+#include "shortest_path.h"
 
 using namespace std;
 
@@ -46,6 +47,12 @@ int main() {
   sansebastian.set_neighbors(new location_t*[] { &bayonne, &pampelune, &bilbao, nullptr });
   pampelune.set_neighbors(new location_t*[] { &bilbao, &sansebastian, &pau, nullptr });
   bilbao.set_neighbors(new location_t*[] { &sansebastian, &pampelune, nullptr });
-  cout << palaiseau.distance_to(&paris) << endl;
+  shortest_path_t path_to_bilbao(&palaiseau, &bilbao);
+  path_to_bilbao.compute();
+  path_to_bilbao.display();
+
+  shortest_path_t path_to_palaiseau(&bilbao, &palaiseau);
+  path_to_palaiseau.compute();
+  path_to_palaiseau.display();
   return 0;
 }
