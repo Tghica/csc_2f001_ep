@@ -2,7 +2,7 @@
 .SECONDARY:        # keep intermediate object files
 .PHONY: all clean  # these targets are not files
 
-CXXFLAGS=-Wall -Werror -g
+CXXFLAGS=-Wall -Werror -g -std=c++20
 BIN=bilbao
 
 all: $(BIN)
