@@ -10,11 +10,11 @@ void error(string str) {
   exit(1);
 }
 
-node_t* node_t::eval(){
-  return this;
+node_t* node_t::eval(frame_t* frame) {
+    return this;
 }
 
-node_t* node_t::apply(list_t* list){
+node_t* node_t::apply(list_t* list, frame_t* frame){
   error("No se puede we don no yet :( it crapeted");
 }
 
@@ -52,9 +52,9 @@ list_t* list_t::as_list(){
   return this;
 }
 
-node_t* list_t::eval(){
-  node_t* operation = this->at(0)->eval();
-  return operation->apply(this);
+node_t* list_t::eval(frame_t* frame) {
+    node_t* operation = this->at(0)->eval(frame);
+    return operation->apply(this, frame);
 }
 
 size_t list_t::size(){
@@ -110,8 +110,44 @@ add_t::add_t(){
   this->id = "+";
 }
 
-node_t* add_t::apply(list_t* list) {
-  return new integer_t(list->at(1)->eval()->int_value() + list->at(2)->eval()->int_value());
+node_t* add_t::apply(list_t* list, frame_t* frame) {
+    return new integer_t(
+        list->at(1)->eval(frame)->int_value() +
+        list->at(2)->eval(frame)->int_value()
+    );
+}
+
+less_t::less_t() {
+  this->id = "<";
+}
+
+node_t* less_t::apply(list_t* list, frame_t* frame) {
+  if (list->size() != 3) {
+    error("< expects two operands");
+  }
+
+  uintptr_t left = list->at(1)->eval(frame)->int_value();
+  uintptr_t right = list->at(2)->eval(frame)->int_value();
+  return new integer_t(left < right ? 1 : 0);
+}
+
+while_t::while_t() {
+  this->id = "while";
+}
+
+node_t* while_t::apply(list_t* list, frame_t* frame) {
+  if (list->size() < 3) {
+    error("while expects a condition and a body");
+  }
+
+  node_t* result = new integer_t{0};
+  while (list->at(1)->eval(frame)->int_value() != 0) {
+    for (size_t i = 2; i < list->size(); ++i) {
+      result = list->at(i)->eval(frame);
+    }
+  }
+
+  return result;
 }
 
 uintptr_t integer_t::int_value(){
@@ -152,5 +188,26 @@ node_t* frame_t::get(node_t* sym){
       return this->at(i)->as_list()->at(1);
     }
   }
-  error("No se puede no element with that symbol :( it crapeted")
+  error("No se puede no element with that symbol :( it crapeted");
+}
+
+node_t* symbol_t::eval(frame_t* frame) {
+    return frame->get(this);
+}
+
+set_t::set_t() {
+    this->id = "set!";
+}
+
+node_t* set_t::apply(list_t* list, frame_t* frame) {
+    if (list->size() != 3) {
+        error("set! expects a symbol and a value");
+    }
+
+    node_t* symbol = list->at(1);
+    node_t* value = list->at(2)->eval(frame);
+
+    frame->set(symbol, value);
+
+    return value;
 }

@@ -5,9 +5,11 @@ struct node_t;
 
 struct list_t;
 
+struct frame_t;
+
 struct node_t{
-  virtual node_t* eval();
-  virtual node_t* apply(list_t* list);
+  virtual node_t* eval(frame_t* frame);
+  virtual node_t* apply(list_t* list, frame_t* frame);
   virtual std::string to_string();
   virtual list_t* as_list();
   virtual uintptr_t int_value();
@@ -22,7 +24,17 @@ struct keyword_t : node_t{
 
 struct add_t : keyword_t{
   add_t();
-  node_t* apply(list_t* list);
+  node_t* apply(list_t* list, frame_t* frame);
+};
+
+struct less_t : keyword_t{
+  less_t();
+  node_t* apply(list_t* list, frame_t* frame);
+};
+
+struct while_t : keyword_t{
+  while_t();
+  node_t* apply(list_t* list, frame_t* frame);
 };
 
 struct list_t : node_t{
@@ -30,7 +42,7 @@ struct list_t : node_t{
   size_t nb_elements;
   size_t capacity;
   list_t();
-  node_t* eval();
+  node_t* eval(frame_t* frame);
   list_t* as_list();
   size_t size();
   node_t* at(size_t i);
@@ -48,14 +60,21 @@ struct integer_t : node_t{
   uintptr_t int_value();
 };
 
-struct symbol_t : node_t{
-  std::string id;
-  symbol_t(std::string symbol);
-  bool is(std::string id);
-  std::string to_string();
+struct symbol_t : node_t {
+    std::string id;
+    symbol_t(std::string symbol);
+
+    node_t* eval(frame_t* frame) override;
+    bool is(std::string id);
+    std::string to_string();
 };
 
 struct frame_t : list_t{
   void set(node_t* sym, node_t* value);
   node_t* get(node_t* sym);
-};  
+};
+
+struct set_t : keyword_t {
+    set_t();
+    node_t* apply(list_t* list, frame_t* frame) override;
+};
